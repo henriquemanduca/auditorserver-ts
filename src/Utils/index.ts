@@ -1,6 +1,6 @@
 import { generate } from 'generate-password';
 import fs from 'fs';
-import jwt from 'jsonwebtoken';
+import { sign } from 'jsonwebtoken';
 import moment from 'moment';
 
 import dotEnv from 'dotenv';
@@ -11,7 +11,7 @@ import 'moment/locale/pt-br';
 dotEnv.config();
 moment.locale('pt-br');
 
-interface User {
+interface UserPayLoad {
   id: string;
 }
 
@@ -42,8 +42,8 @@ class Utils {
     return password;
   }
 
-  public generateToken(user: User): string {
-    return jwt.sign(user.id, authConfig.jwt.secret, {
+  public generateToken(user: UserPayLoad): string {
+    return sign(user, authConfig.jwt.secret, {
       expiresIn: authConfig.jwt.expiresIn,
     });
   }

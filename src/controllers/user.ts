@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { compare } from 'bcryptjs';
-import User from '../models/user';
 
+import User from '../models/user';
 import utils from '../Utils';
 
 // 202 aceito
@@ -24,32 +24,32 @@ class UserController {
         return res.status(203).send({ error: 'Dados inválidos!' });
       }
 
-      delete user.password;
+      const token = utils.generateToken({ id: user._id });
       utils.log(`Logado com ${login}.`);
 
-      return res.send({ user, token: utils.generateToken({ id: user.id }) });
+      return res.send({ login: user.login, token });
     } catch (error) {
       return res
         .status(400)
-        .send({ error: 'Falha no registrar!', login: 'false' });
+        .send({ error: 'Falha no registrar!' });
     }
   }
 
   public async index(req: Request, res: Response): Promise<Response> {
     try {
-      const users = await User.find();
+      const users = await User.find().select('-_id login createAt');
       return res.status(202).send({ users });
     } catch (error) {
       return res
         .status(400)
-        .send({ error: 'Falha no registrar!', login: 'false' });
+        .send({ error: 'Falha no registrar!' });
     }
   }
 
   public async create(req: Request, res: Response): Promise<Response> {
     try {
-      const { login } = req.body;
-      const password = utils.generatePassword(10);
+      const { login, password } = req.body;
+      // const password = utils.generatePassword(10);
       const user = await User.create({ login, password });
       utils.log(`Novo usuário ${login}`);
 
@@ -57,25 +57,22 @@ class UserController {
     } catch (error) {
       return res
         .status(400)
-        .send({ error: 'Falha no registrar!', login: 'false' });
+        .send({ error: 'Falha no registrar!' });
     }
   }
 
   public async refreshPassword(req: Request, res: Response): Promise<Response> {
-    const { login } = req.body;
+    const { login, password } = req.body;
 
     try {
-      const user = await User.findOne({ login });
+      const user = await User.findOne({ login }).select('login password');
       if (user) {
-        const password = utils.generatePassword(10);
+        // const password = utils.generatePassword(10);
         user.password = password;
-
         await user.save();
+
         // mailer.notifaUsuarioSenha(login, password);
-
         utils.log(`Nova senha para ${login}.`);
-        delete user.password;
-
         return res.send({ user });
       }
       return res.status(204).send({ error: 'Dados inválidos!' });
