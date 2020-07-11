@@ -1,7 +1,7 @@
 import { Document, Schema } from 'mongoose';
 import mongoose from '../database';
 
-export interface IUCfgModel extends Document {
+export interface ICfgModel extends Document {
   remainingQueriesWS: number;
   createAt?: Date;
   updateAt?: Date;
@@ -9,7 +9,7 @@ export interface IUCfgModel extends Document {
 
 const CfgSchema: Schema = new Schema({
   remainingQueriesWS: {
-    type: String,
+    type: Number,
     require: true,
     unique: true,
     lowercase: true,
@@ -24,6 +24,11 @@ const CfgSchema: Schema = new Schema({
   },
 });
 
-const Cfg = mongoose.model<IUCfgModel>('Cfg', CfgSchema);
+CfgSchema.pre<ICfgModel>('save', async function (next): Promise<void> {
+  this.updateAt = new Date();
+  next();
+});
+
+const Cfg = mongoose.model<ICfgModel>('Cfg', CfgSchema);
 
 export default Cfg;

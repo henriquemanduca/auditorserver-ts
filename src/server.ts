@@ -16,6 +16,7 @@ app.on('ready', () => {
 });
 
 mongoose.connection.once('open', () => {
+  console.clear();
   console.log('Starting service...');
   app.emit('ready');
 });

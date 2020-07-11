@@ -12,20 +12,18 @@ export default function ensureAuthenticated(
   req: Request,
   res: Response,
   next: NextFunction,
-): Response {
+): void {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    return res.status(401).send({ error: 'Tokene não enviado!' });
+    throw new Error('Token não enviado!');
   }
 
-  const parts = authHeader.split(' ');
-
-  if (parts.length === 2) {
-    const [scheme, token] = parts;
+  try {
+    const [scheme, token] = authHeader.split(' ');
 
     if (!/^Bearer$/i.test(scheme)) {
-      return res.status(401).send({ error: 'Token não compatível!' });
+      throw new Error('Token não compatível!');
     }
 
     const decoded = verify(token, authConfig.jwt.secret);
@@ -35,7 +33,8 @@ export default function ensureAuthenticated(
       id: sub,
     };
 
-    next();
+    return next();
+  } catch (error) {
+    throw new Error('Token mal formado!');
   }
-  return res.status(401).send({ error: 'Token mal formado!' });
 }

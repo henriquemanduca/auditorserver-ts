@@ -1,7 +1,7 @@
 import { generate } from 'generate-password';
-import fs from 'fs';
 import { sign } from 'jsonwebtoken';
 import moment from 'moment';
+import fs from 'fs';
 
 import dotEnv from 'dotenv';
 
@@ -50,9 +50,9 @@ class Utils {
 
   public getMongoURL(): string {
     if (process.env.NODE_ENV === 'development') {
-      return String(process.env.ADT_MONGO_ATLAS);
+      return (process.env.ADT_MONGO_ATLAS as string);
     }
-    return String(process.env.ADT_MONGO_URL);
+    return (process.env.ADT_MONGO_URL as string);
   }
 }
 
