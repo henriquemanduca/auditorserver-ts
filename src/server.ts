@@ -3,7 +3,7 @@ import mongoose from './database';
 
 import routes from './routes';
 
-const PORT = Number(process.env.ADT_SERVER_PORT) || 3006;
+const PORT = Number(process.env.PORT) || 3006;
 const app = express();
 
 app.use(express.json());

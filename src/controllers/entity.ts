@@ -23,6 +23,11 @@ class EntityController {
   public async entityInfo(req: Request, res: Response): Promise<Response> {
     try {
       const { cnpj, nome } = req.body;
+
+      if (cnpj === undefined || nome === undefined) {
+        throw new Error('Parâmetro inválido!');
+      }
+
       const entity = await Entity.findOne({ cnpj });
 
       if (entity) {
@@ -50,13 +55,20 @@ class EntityController {
 
       return res.send({ entity: newEntity });
     } catch (error) {
-      return res.status(400).send({ error: 'Não foi possível consultar!' });
+      return res
+        .status(400)
+        .send({ error: 'Não foi possível consultar!', message: error.message });
     }
   }
 
   public async entityInfoCNAE(req: Request, res: Response): Promise<Response> {
     try {
       const { cnpj, nome } = req.body;
+
+      if (cnpj === undefined || nome === undefined) {
+        throw new Error('Parâmetro inválido!');
+      }
+
       const entity = await Entity.findOne({ cnpj });
 
       if (entity && entity.cnae.length > 0) {
@@ -113,7 +125,9 @@ class EntityController {
 
       return res.send({ entity: newEntity });
     } catch (error) {
-      return res.status(400).send({ error: 'Não foi possível consultar!' });
+      return res
+        .status(400)
+        .send({ error: 'Não foi possível consultar!', message: error.message });
     }
   }
 

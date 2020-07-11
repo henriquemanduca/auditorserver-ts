@@ -50,9 +50,9 @@ class Utils {
 
   public getMongoURL(): string {
     if (process.env.NODE_ENV === 'development') {
-      return (process.env.ADT_MONGO_ATLAS as string);
+      return process.env.ADT_MONGO_ATLAS as string;
     }
-    return (process.env.ADT_MONGO_URL as string);
+    return process.env.ADT_MONGO_URL as string;
   }
 }
 
