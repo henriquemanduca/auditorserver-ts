@@ -25,6 +25,7 @@ interface ISintegraSN extends IBaseSintegra {
   nome_empresarial: string;
   situacao_simples_nacional: string;
   situacao_simples_nacional_anterior: string;
+  eventos_futuros_simples_nacional: string;
 }
 
 interface ISintegraRFCnae {
@@ -33,14 +34,18 @@ interface ISintegraRFCnae {
 }
 
 interface ISintegraRF extends IBaseSintegra {
-  data_situacao: string;
-  complemento: string;
-  nome: string;
-  municipio: string;
-  cep: string;
-  uf: string;
+  cnpj: string;
+  cnpj_matriz: string;
+  nome_empresarial: string;
   email: string;
-  atividade_principal: ISintegraRFCnae;
+  uf: string;
+  municipio: string;
+  bairro: string;
+  logradouro: string;
+  complemento: string;
+  numero: string;
+  cep: string;
+  atividade_principal: ISintegraRFCnae[];
   atividades_secundarias: ISintegraRFCnae[];
 }
 
@@ -55,11 +60,11 @@ class SintegraWS {
       baseURL: 'https://www.sintegraws.com.br/api/v1/',
     });
 
-    this.getRemainingQueriesWS = this.getRemainingQueriesWS.bind(this);
-    this.setRemainingQueriesWS = this.setRemainingQueriesWS.bind(this);
+    this.getWsRemainingQueries = this.getWsRemainingQueries.bind(this);
+    this.setWsRemainingQueries = this.setWsRemainingQueries.bind(this);
   }
 
-  private setRemainingQueriesWS(): void {
+  private setWsRemainingQueries(): void {
     this.api
       .get<ISintegraSaldo>('consulta-saldo.php', {
         params: { token: this.token },
@@ -70,14 +75,14 @@ class SintegraWS {
       });
   }
 
-  public async getRemainingQueriesWS(
+  public async getWsRemainingQueries(
     req: Request,
     res: Response,
   ): Promise<Response> {
     try {
       const { remainingQueriesWS } = await cfgController.index();
 
-      this.setRemainingQueriesWS();
+      this.setWsRemainingQueries();
 
       return res.send({ remainingQueriesWS });
     } catch (error) {
@@ -86,7 +91,33 @@ class SintegraWS {
     }
   }
 
-  public async getEntitySN(req: Request, res: Response): Promise<Response> {
+  public async getEntitySN(cnpj: string): Promise<ISintegraSN> {
+    try {
+      const response = await this.api.get<ISintegraSN>('execute-api.php', {
+        params: { token: this.token, cnpj, plugin: 'SN' },
+      });
+
+      return response.data;
+    } catch (error) {
+      // console.log(error);
+      throw new Error(error);
+    }
+  }
+
+  public async getEntityRF(cnpj: string): Promise<ISintegraRF> {
+    try {
+      const response = await this.api.get<ISintegraRF>('execute-api.php', {
+        params: { token: this.token, cnpj, plugin: 'RF' },
+      });
+
+      return response.data;
+    } catch (error) {
+      // console.log(error);
+      throw new Error(error);
+    }
+  }
+
+  public async getWsEntitySN(req: Request, res: Response): Promise<Response> {
     try {
       const { cnpj } = req.body;
 
@@ -101,7 +132,7 @@ class SintegraWS {
     }
   }
 
-  public async getEntityRF(req: Request, res: Response): Promise<Response> {
+  public async getWsEntityRF(req: Request, res: Response): Promise<Response> {
     try {
       const { cnpj } = req.body;
 

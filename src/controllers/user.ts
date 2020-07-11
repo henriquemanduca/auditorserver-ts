@@ -29,9 +29,7 @@ class UserController {
 
       return res.send({ login: user.login, token });
     } catch (error) {
-      return res
-        .status(400)
-        .send({ error: 'Falha no registrar!' });
+      return res.status(400).send({ error: 'Falha no registrar!' });
     }
   }
 
@@ -40,9 +38,7 @@ class UserController {
       const users = await User.find().select('-_id login createAt');
       return res.status(202).send({ users });
     } catch (error) {
-      return res
-        .status(400)
-        .send({ error: 'Falha no registrar!' });
+      return res.status(400).send({ error: 'Falha no registrar!' });
     }
   }
 
@@ -55,9 +51,7 @@ class UserController {
 
       return res.send({ user });
     } catch (error) {
-      return res
-        .status(400)
-        .send({ error: 'Falha no registrar!' });
+      return res.status(400).send({ error: 'Falha no registrar!' });
     }
   }
 

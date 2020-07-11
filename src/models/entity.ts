@@ -2,9 +2,19 @@ import { Document, Schema } from 'mongoose';
 import mongoose from '../database';
 
 export interface ICnaeModel extends Document {
+  principal: boolean;
   codigo: string;
   texto: string;
-  principal: boolean;
+}
+
+export interface IEnderecoModel extends Document {
+  uf: string;
+  municipio: string;
+  bairro: string;
+  logradouro: string;
+  complemento: string;
+  numero: string;
+  cep: string;
 }
 
 export interface IEntityModel extends Document {
@@ -12,10 +22,37 @@ export interface IEntityModel extends Document {
   nome: string;
   cnpj: string;
   simples: boolean;
+  simplesAnterior: string;
+  simplesFuturo: string;
   cnae: [ICnaeModel];
-  consultado?: Date;
+  endereco?: IEnderecoModel;
+  consultado: Date;
   createAt?: Date;
 }
+
+const EnderecoSchema: Schema = new Schema(
+  {
+    uf: {
+      type: String,
+    },
+    municipio: {
+      type: String,
+    },
+    bairro: {
+      type: String,
+    },
+    logradouro: {
+      type: String,
+    },
+    complemento: {
+      type: String,
+    },
+    cep: {
+      type: String,
+    },
+  },
+  { _id: false },
+);
 
 const CnaeSchema: Schema = new Schema(
   {
@@ -44,6 +81,9 @@ const EntitySchema: Schema = new Schema({
     type: String,
     require: true,
   },
+  email: {
+    type: String,
+  },
   cnpj: {
     type: String,
     require: true,
@@ -52,7 +92,16 @@ const EntitySchema: Schema = new Schema({
     type: Boolean,
     require: true,
   },
+  simplesAnterior: {
+    type: String,
+    require: true,
+  },
+  simplesFuturo: {
+    type: String,
+    require: true,
+  },
   cnae: [CnaeSchema],
+  endereco: EnderecoSchema,
   consultado: {
     type: Date,
     required: true,

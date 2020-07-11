@@ -1,11 +1,15 @@
 import { Request, Response } from 'express';
 
-import Entity, { IEntityModel, ICnaeModel } from '../models/entity';
+import Entity, {
+  IEntityModel,
+  ICnaeModel,
+  IEnderecoModel,
+} from '../models/entity';
+import sintegraWs from '../services/sintegraWS';
+import systemParams from '../config/system';
 import utils from '../Utils';
 
 class EntityController {
-  private maxPerPage = 100;
-
   public async findById(req: Request, res: Response): Promise<Response> {
     try {
       const { entityId } = req.params;
@@ -13,6 +17,103 @@ class EntityController {
       return res.send({ entidade });
     } catch (error) {
       return res.status(400).send({ error: 'Não foi possível buscar por ID!' });
+    }
+  }
+
+  public async entityInfo(req: Request, res: Response): Promise<Response> {
+    try {
+      const { cnpj, nome } = req.body;
+      const entity = await Entity.findOne({ cnpj });
+
+      if (entity) {
+        return res.send({ entity });
+      }
+
+      const result = await sintegraWs.getEntitySN(cnpj);
+      const entityObj = {
+        razao: result.nome_empresarial,
+        nome,
+        cnpj,
+        simples: !(
+          result.situacao_simples_nacional ===
+          'NÃO optante pelo Simples Nacional'
+        ), // || result.situacao_simples_nacional.indexOf('NÃO') === -1,
+        simplesAnterior: result.situacao_simples_nacional_anterior,
+        simplesFuturo: result.eventos_futuros_simples_nacional,
+        consultado: new Date(),
+        cnae: [],
+      };
+
+      const newEntity = await Entity.create({
+        ...entityObj,
+      });
+
+      return res.send({ entity: newEntity });
+    } catch (error) {
+      return res.status(400).send({ error: 'Não foi possível consultar!' });
+    }
+  }
+
+  public async entityInfoCNAE(req: Request, res: Response): Promise<Response> {
+    try {
+      const { cnpj, nome } = req.body;
+      const entity = await Entity.findOne({ cnpj });
+
+      if (entity && entity.cnae.length > 0) {
+        return res.send({ entity });
+      }
+
+      const result = await sintegraWs.getEntityRF(cnpj);
+
+      const endereco = {
+        uf: result.uf,
+        municipio: result.municipio,
+        bairro: result.bairro,
+        logradouro: result.logradouro,
+        complemento: result.complemento,
+        numero: result.numero,
+        cep: result.cep,
+      } as IEnderecoModel;
+
+      const cnae: Array<ICnaeModel> = [];
+
+      result.atividade_principal.forEach((item) => {
+        const newCnae = {
+          principal: true,
+          codigo: item.code,
+          texto: item.text,
+        } as ICnaeModel;
+        cnae.push(newCnae);
+      });
+
+      result.atividades_secundarias.forEach((item) => {
+        const newCnae = {
+          principal: false,
+          codigo: item.code,
+          texto: item.text,
+        } as ICnaeModel;
+        cnae.push(newCnae);
+      });
+
+      const entityObj = {
+        razao: result.nome_empresarial,
+        nome,
+        cnpj,
+        endereco,
+        simples: true,
+        simplesAnterior: '',
+        simplesFuturo: '',
+        consultado: new Date(),
+        cnae,
+      };
+
+      const newEntity = await Entity.create({
+        ...entityObj,
+      });
+
+      return res.send({ entity: newEntity });
+    } catch (error) {
+      return res.status(400).send({ error: 'Não foi possível consultar!' });
     }
   }
 
@@ -29,8 +130,8 @@ class EntityController {
       }
 
       const entidades = await Entity.find()
-        .limit(this.maxPerPage)
-        .skip(this.maxPerPage * (page - 1))
+        .limit(systemParams.restFull.maxitemsPagination)
+        .skip(systemParams.restFull.maxitemsPagination * (page - 1))
         .sort({ nome: 'asc' });
 
       return res.send({ count: entidades.length, entidades });
@@ -60,9 +161,7 @@ class EntityController {
   public async update(req: Request, res: Response): Promise<Response> {
     try {
       const { entityId } = req.params;
-      const {
-        razao, nome, simples, cnae,
-      } = req.body;
+      const { razao, nome, simples, cnae } = req.body;
 
       const entity = await Entity.findByIdAndUpdate(
         { _id: entityId },
@@ -85,9 +184,7 @@ class EntityController {
       }
       return res.status(400).send({ error: 'Registro não encontrado.' });
     } catch (error) {
-      return res
-        .status(400)
-        .send({ error: 'Não foi possível atualizar!' });
+      return res.status(400).send({ error: 'Não foi possível atualizar!' });
     }
   }
 
@@ -101,9 +198,7 @@ class EntityController {
       }
       return res.status(400).send({ error: 'Registro não encontrado.' });
     } catch (error) {
-      return res
-        .status(400)
-        .send({ error: 'Não foi possível deletar!' });
+      return res.status(400).send({ error: 'Não foi possível deletar!' });
     }
   }
 }

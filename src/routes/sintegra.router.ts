@@ -8,7 +8,7 @@ const sintegraRouter = Router();
 sintegraRouter.use(ensureAuthenticated);
 
 // Saldo
-sintegraRouter.get('/rq', sintegreWs.getRemainingQueriesWS);
+sintegraRouter.get('/rq', sintegreWs.getWsRemainingQueries);
 // sintegraRouter.get('/sn', sintegreWs.getEntitySN);
 // sintegraRouter.get('/rf', sintegreWs.getEntityRF);
 

@@ -6,15 +6,12 @@ const entitiesRouter = Router();
 
 entitiesRouter.use(ensureAuthenticated);
 
-// List
 entitiesRouter.get('/', entityController.index);
-
+entitiesRouter.get('/info', entityController.entityInfo);
+entitiesRouter.get('/cnae', entityController.entityInfoCNAE);
 entitiesRouter.post('/', entityController.create);
-
 entitiesRouter.get('/:entityId', entityController.findById);
-
 entitiesRouter.put('/:entityId', entityController.update);
-
 entitiesRouter.delete('/:entityId', entityController.delete);
 
 export default entitiesRouter;
