@@ -5,6 +5,9 @@ import mongoose from '../database';
 export interface IUserModel extends Document {
   login: string;
   password: string;
+  guidKey: string;
+  enabled: boolean;
+  updateAt?: Date;
   createAt?: Date;
 }
 
@@ -20,6 +23,20 @@ const UserSchema: Schema = new Schema({
     require: true,
     select: false,
   },
+  guidKey: {
+    type: String,
+    require: true,
+    select: false,
+  },
+  enabled: {
+    type: Boolean,
+    required: true,
+    select: false,
+  },
+  updateAt: {
+    type: Date,
+    default: Date.now,
+  },
   createAt: {
     type: Date,
     default: Date.now,
@@ -27,6 +44,7 @@ const UserSchema: Schema = new Schema({
 });
 
 UserSchema.pre<IUserModel>('save', async function (next): Promise<void> {
+  this.updateAt = new Date();
   this.password = await hash(this.password, 1);
   next();
 });
