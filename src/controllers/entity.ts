@@ -143,12 +143,12 @@ class EntityController {
         return res.send({ message: 'OK' });
       }
 
-      const entidades = await Entity.find()
+      const entities = await Entity.find()
         .limit(systemParams.restFull.maxitemsPagination)
         .skip(systemParams.restFull.maxitemsPagination * (page - 1))
         .sort({ nome: 'asc' });
 
-      return res.send({ count: entidades.length, entidades });
+      return res.send({ count: entities.length, entities });
     } catch (error) {
       return res.status(400).send({ error: 'Não foi possível listar!' });
     }
