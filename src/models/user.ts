@@ -6,7 +6,7 @@ export interface IUserModel extends Document {
   login: string;
   password: string;
   guidKey: string;
-  enabled: boolean;
+  enabled?: boolean;
   updateAt?: Date;
   createAt?: Date;
 }
@@ -30,8 +30,8 @@ const UserSchema: Schema = new Schema({
   },
   enabled: {
     type: Boolean,
-    required: true,
     select: false,
+    default: false,
   },
   updateAt: {
     type: Date,

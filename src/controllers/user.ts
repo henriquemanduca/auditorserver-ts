@@ -44,9 +44,9 @@ class UserController {
 
   public async create(req: Request, res: Response): Promise<Response> {
     try {
-      const { login, password } = req.body;
+      const { login, password, guidKey } = req.body;
       // const password = utils.generatePassword(10);
-      const user = await User.create({ login, password });
+      const user = await User.create({ login, password, guidKey });
       utils.log(`Novo usuário ${login}`);
 
       return res.send({ user });
