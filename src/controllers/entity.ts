@@ -35,6 +35,11 @@ class EntityController {
       }
 
       const result = await sintegraWs.getEntitySN(cnpj);
+
+      if (result.code === '03') {
+        throw new Error(result.message);
+      }
+
       const entityObj = {
         razao: result.nome_empresarial,
         nome,
@@ -76,6 +81,10 @@ class EntityController {
       }
 
       const result = await sintegraWs.getEntityRF(cnpj);
+
+      if (result.code === '03') {
+        throw new Error(result.message);
+      }
 
       const endereco = {
         uf: result.uf,

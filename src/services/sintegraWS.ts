@@ -60,6 +60,7 @@ class SintegraWS {
       baseURL: 'https://www.sintegraws.com.br/api/v1/',
     });
 
+    // this.getEntitySN = this.getEntitySN.bind(this);
     this.getWsRemainingQueries = this.getWsRemainingQueries.bind(this);
     this.setWsRemainingQueries = this.setWsRemainingQueries.bind(this);
   }
