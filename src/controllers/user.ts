@@ -36,7 +36,19 @@ class UserController {
   public async index(req: Request, res: Response): Promise<Response> {
     try {
       const users = await User.find().select('-_id login createAt');
-      return res.status(202).send({ users });
+
+      const respUsers = users.map((user) => {
+        const temUser = {
+          _id: user._id,
+          login: user.login,
+          authenticated: user.enabled,
+          createAt: user.createAt,
+        };
+
+        return temUser;
+      });
+
+      return res.status(202).send(respUsers);
     } catch (error) {
       return res.status(400).send({ error: 'Falha no registrar!' });
     }
@@ -49,7 +61,14 @@ class UserController {
       const user = await User.create({ login, password, guidKey });
       utils.log(`Novo usuário ${login}`);
 
-      return res.send({ user });
+      const respUser = {
+        _id: user._id,
+        login: user.login,
+        authenticated: user.enabled,
+        createAt: user.createAt,
+      };
+
+      return res.send(respUser);
     } catch (error) {
       return res.status(400).send({ error: 'Falha no registrar!' });
     }
