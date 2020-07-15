@@ -11,8 +11,8 @@ import utils from '../Utils';
 class UserController {
   public async login(req: Request, res: Response): Promise<Response> {
     try {
-      const { login, password } = req.body;
-      const user = await User.findOne({ login }).select('+password');
+      const { login, password, guidKey } = req.body;
+      const user = await User.findOne({ login, guidKey }).select('+password');
 
       if (!user) {
         utils.log(`Usuário ${login} não encontrado.`);
@@ -70,7 +70,9 @@ class UserController {
 
       return res.send(respUser);
     } catch (error) {
-      return res.status(400).send({ error: 'Falha no registrar!' });
+      return res
+        .status(400)
+        .send({ error: 'Falha no registrar!', message: error.message });
     }
   }
 
