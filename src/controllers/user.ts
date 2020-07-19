@@ -35,7 +35,7 @@ class UserController {
 
   public async index(req: Request, res: Response): Promise<Response> {
     try {
-      const users = await User.find().select('-_id login createAt');
+      const users = await User.find();
 
       const respUsers = users.map((user) => {
         const temUser = {
@@ -77,10 +77,13 @@ class UserController {
   }
 
   public async refreshPassword(req: Request, res: Response): Promise<Response> {
-    const { login, password } = req.body;
-
     try {
-      const user = await User.findOne({ login }).select('login password');
+      const { login, password, guidKey } = req.body;
+
+      const user = await User.findOne({ login, guidKey }).select(
+        'login guidKey',
+      );
+
       if (user) {
         // const password = utils.generatePassword(10);
         user.password = password;
