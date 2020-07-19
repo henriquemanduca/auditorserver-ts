@@ -1,6 +1,6 @@
 {
   "name": "auditorserver-ts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "API de Serviços",
   "main": "index.js",
   "repository": "git@github.com:henriquemanduca/auditorserver-ts.git",
