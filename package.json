@@ -13,11 +13,13 @@
     "dev:server": "ts-node-dev -T --ignore-watch node_modules src/server.ts"
   },
   "dependencies": {
+    "@types/helmet": "^0.0.47",
     "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "generate-password": "^1.5.1",
+    "helmet": "^3.23.3",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.27.0",
     "mongoose": "^5.9.22"

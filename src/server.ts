@@ -1,4 +1,5 @@
 import express from 'express';
+import helmet from 'helmet';
 
 import mongoose from './database';
 import routes from './routes';
@@ -6,6 +7,7 @@ import routes from './routes';
 const PORT = Number(process.env.PORT) || 3006;
 const app = express();
 
+app.use(helmet());
 app.use(express.json());
 
 app.on('ready', () => {
