@@ -1,6 +1,6 @@
 import express from 'express';
-import mongoose from './database';
 
+import mongoose from './database';
 import routes from './routes';
 
 const PORT = Number(process.env.PORT) || 3006;
@@ -10,7 +10,7 @@ app.use(express.json());
 
 app.on('ready', () => {
   app.use(routes);
-  app.listen(PORT, '0.0.0.0', () => {
+  app.listen(PORT, 'localhost', () => {
     console.log(`AuditorServer-TS running on ${PORT}.`);
   });
 });
