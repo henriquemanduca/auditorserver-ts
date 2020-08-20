@@ -71,7 +71,7 @@ class EntityController {
       const { cnpj, nome } = req.body;
 
       if (cnpj === undefined || nome === undefined) {
-        throw new Error('Parâmetro inválido!');
+        return res.status(400).send({ error: 'Parâmetro inválido!' });
       }
 
       const entity = await Entity.findOne({ cnpj });

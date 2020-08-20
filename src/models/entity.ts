@@ -32,84 +32,37 @@ export interface IEntityModel extends Document {
 
 const EnderecoSchema: Schema = new Schema(
   {
-    uf: {
-      type: String,
-    },
-    municipio: {
-      type: String,
-    },
-    bairro: {
-      type: String,
-    },
-    logradouro: {
-      type: String,
-    },
-    complemento: {
-      type: String,
-    },
-    cep: {
-      type: String,
-    },
+    uf: { type: String },
+    municipio: { type: String },
+    bairro: { type: String },
+    logradouro: { type: String },
+    complemento: { type: String },
+    cep: { type: String },
   },
   { _id: false },
 );
 
 const CnaeSchema: Schema = new Schema(
   {
-    codigo: {
-      type: String,
-      require: true,
-    },
-    texto: {
-      type: String,
-      require: true,
-    },
-    principal: {
-      type: Boolean,
-      require: true,
-    },
+    codigo: { type: String, require: true },
+    texto: { type: String, require: true },
+    principal: { type: Boolean, require: true },
   },
   { _id: false },
 );
 
 const EntitySchema: Schema = new Schema({
-  razao: {
-    type: String,
-    require: true,
-  },
-  nome: {
-    type: String,
-    require: true,
-  },
-  email: {
-    type: String,
-  },
-  cnpj: {
-    type: String,
-    require: true,
-  },
-  simples: {
-    type: Boolean,
-    require: true,
-  },
-  simplesAnterior: {
-    type: String,
-    require: true,
-  },
-  simplesFuturo: {
-    type: String,
-    require: true,
-  },
+  razao: { type: String, require: true },
+  nome: { type: String, require: true },
+  email: { type: String },
+  cnpj: { type: String, require: true },
+  simples: { type: Boolean, require: true },
+  simplesAnterior: { type: String, require: true },
+  simplesFuturo: { type: String, require: true },
   cnae: [CnaeSchema],
   endereco: EnderecoSchema,
-  consultado: {
-    type: Date,
-    required: true,
-  },
-  createAt: {
-    type: Date,
-    default: Date.now,
-  },
+  consultado: { type: Date, required: true },
+  createAt: { type: Date, default: Date.now },
 });
 
 const Entity = mongoose.model<IEntityModel>('Entities', EntitySchema);
