@@ -8,6 +8,8 @@ export interface ICestModel extends Document {
 export interface IProviderModel extends Document {
   cnpj: string;
   codigo: string;
+  ean: string;
+  ean_trib: string;
 }
 
 export interface IProductModel extends Document {
@@ -34,6 +36,8 @@ const ProviderSchema: Schema = new Schema(
   {
     cnpj: { type: String, require: true },
     codigo: { type: String, require: true },
+    ean: { type: String, require: true },
+    ean_trib: { type: String, require: true },
   },
   { _id: false },
 );
