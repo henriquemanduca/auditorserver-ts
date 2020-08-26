@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.on('ready', () => {
   app.use(routes);
-  app.listen(PORT, 'localhost', () => {
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`AuditorServer-TS running on ${PORT}.`);
   });
 });

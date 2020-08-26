@@ -12,6 +12,13 @@ export interface IProviderModel extends Document {
   ean_trib: string;
 }
 
+export interface IUnidadeModel extends Document {
+  unidade: string;
+  descricao: string;
+  fator: number;
+  estoque: boolean;
+}
+
 export interface IProductModel extends Document {
   empresa: string;
   codigo1: string;
@@ -42,6 +49,16 @@ const ProviderSchema: Schema = new Schema(
   { _id: false },
 );
 
+const UnidadeSchema: Schema = new Schema(
+  {
+    unidade: { type: String, require: true },
+    descricao: { type: String, require: false },
+    fator: { type: Number, require: true },
+    estoque: { type: Boolean, require: true },
+  },
+  { _id: false },
+);
+
 const ProductSchema: Schema = new Schema({
   empresa: { type: String, required: true },
   codigo1: { type: String, required: true },
@@ -50,6 +67,7 @@ const ProductSchema: Schema = new Schema({
   ean: { type: String, required: false },
   ean_trib: { type: String, required: false },
   ncm: { type: String, required: false },
+  unidades: [UnidadeSchema],
   cest: [CestSchema],
   providers: [ProviderSchema],
   createAt: { type: Date, default: Date.now },

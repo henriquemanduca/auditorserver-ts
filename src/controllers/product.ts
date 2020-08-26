@@ -34,7 +34,7 @@ class ProductController {
     try {
       const { products } = req.body;
 
-      products.map(async (product: IProductModel) => {
+      await products.map(async (product: IProductModel) => {
         const { empresa, codigo1 } = product;
 
         const foud = await Product.findOne({ empresa, codigo1 });
@@ -46,7 +46,7 @@ class ProductController {
 
       return res.send({ msg: 'OK!' });
     } catch (error) {
-      return res.status(400).send({ error: 'Registrox não criados!' });
+      return res.status(400).send({ error: 'Registro não criados!' });
     }
   }
 
