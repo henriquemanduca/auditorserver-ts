@@ -1,2 +1,3 @@
-# auditorserver-ts
-API de serviços do Auditor
+# AuditorServer-ts
+API de serviços para o sistema Auditor (Aplicação desktop ainda em desenvolvimento).
+
