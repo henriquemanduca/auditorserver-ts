@@ -153,8 +153,8 @@ class EntityController {
       }
 
       const entities = await Entity.find()
-        .limit(systemParams.restFull.maxitemsPagination)
-        .skip(systemParams.restFull.maxitemsPagination * (page - 1))
+        .limit(systemParams.restFull.maxItemsPagination)
+        .skip(systemParams.restFull.maxItemsPagination * (page - 1))
         .sort({ nome: 'asc' });
 
       return res.send({ count: entities.length, entities });

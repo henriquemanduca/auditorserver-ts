@@ -4,7 +4,7 @@ import utils from '../Utils';
 // console.log(utils.getMongoURL());
 
 const urlDB = utils.getMongoURL();
-console.log(`Connect to ${urlDB}.`);
+// console.log(`Connect to ${urlDB}.`);
 utils.log(`Connect to ${urlDB}.`);
 
 mongoose

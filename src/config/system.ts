@@ -1,5 +1,5 @@
 export default {
   restFull: {
-    maxitemsPagination: 100,
+    maxItemsPagination: 100,
   },
 };

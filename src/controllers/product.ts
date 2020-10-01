@@ -19,9 +19,9 @@ class ProductController {
         return res.send({ message: 'OK' });
       }
 
-      const products = await Product.find()
-        .limit(systemParams.restFull.maxitemsPagination)
-        .skip(systemParams.restFull.maxitemsPagination * (page - 1))
+      const products = await Product.find({ empresa })
+        .limit(systemParams.restFull.maxItemsPagination)
+        .skip(systemParams.restFull.maxItemsPagination * (page - 1))
         .sort({ nome: 'asc' });
 
       return res.send({ count: products.length, products });
@@ -34,25 +34,35 @@ class ProductController {
     try {
       const { products } = req.body;
 
-      await products.map(async (product: IProductModel) => {
-        const { empresa, codigo1 } = product;
+      const promises = products.map(
+        async (item: IProductModel): Promise<boolean> => {
+          const { empresa, codigo1 } = item;
 
-        const foud = await Product.findOne({ empresa, codigo1 });
+          const product = await Product.findOne({ empresa, codigo1 });
 
-        if (foud === null) {
-          await Product.create({ ...product });
-        }
-      });
+          if (product === null) {
+            await Product.create({ ...item });
+          } else if (product.versao < item.versao) {
+            await Product.findByIdAndUpdate({ _id: product._id }, { ...item });
+          }
 
-      return res.send({ msg: 'OK!' });
+          return true;
+        },
+      );
+
+      await Promise.all(promises);
+
+      return res.send({ msg: 'OK' });
     } catch (error) {
-      return res.status(400).send({ error: 'Registro não criados!' });
+      return res
+        .status(400)
+        .send({ error: 'Registro não criado!', message: error.message });
     }
   }
 
   public async findById(req: Request, res: Response): Promise<Response> {
     try {
-      return res.send({ msg: 'OK!' });
+      return res.send({ msg: 'OK' });
     } catch (error) {
       return res
         .status(400)

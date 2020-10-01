@@ -29,7 +29,9 @@ export interface IProductModel extends Document {
   ncm: string;
   cest: [ICestModel];
   providers: [IProviderModel];
+  versao: number;
   createAt?: Date;
+  updateAt?: Date;
 }
 
 const CestSchema: Schema = new Schema(
@@ -44,7 +46,7 @@ const ProviderSchema: Schema = new Schema(
     cnpj: { type: String, require: true },
     codigo: { type: String, require: true },
     ean: { type: String, require: true },
-    ean_trib: { type: String, require: true },
+    ean_trib: { type: String, require: false },
   },
   { _id: false },
 );
@@ -70,7 +72,14 @@ const ProductSchema: Schema = new Schema({
   unidades: [UnidadeSchema],
   cest: [CestSchema],
   providers: [ProviderSchema],
+  versao: { type: Number, required: true },
   createAt: { type: Date, default: Date.now },
+  updateAt: { type: Date, default: Date.now },
+});
+
+ProductSchema.pre<IProductModel>('save', async function (next): Promise<void> {
+  this.updateAt = new Date();
+  next();
 });
 
 const Product = mongoose.model<IProductModel>('Products', ProductSchema);
